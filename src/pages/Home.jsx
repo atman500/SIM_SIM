@@ -178,7 +178,7 @@ export default function Home({ userRole, setUserRole }) {
             </div>
           </div>
           {/* زر تسجيل الدخول */}
-          <button onClick={() => navigate("/login")} style={{ backgroundColor: "white", color: "#e11d48", border: "none", padding: "10px 20px", borderRadius: "10px", fontSize: "14px", fontWeight: "bold", cursor: "pointer", boxShadow: "0 2px 5px rgba(0,0,0,0.2)" }}>
+          <button onClick={() => navigate("/login")} style={{ backgroundColor: "white", color: "#e11d48", border: "none", padding: "8px 15px", borderRadius: "10px", fontSize: "14px", fontWeight: "bold", cursor: "pointer", boxShadow: "0 2px 5px rgba(0,0,0,0.2)" }}>
             👤 تسجيل الدخول
           </button>
         </div>
