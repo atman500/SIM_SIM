@@ -255,3 +255,32 @@ button {
     justify-content: center !important;
   }
 }
+
+/* --- إجبار أسماء البلدان (النصوص) على الظهور بلون داكن وواضح في الهاتف --- */
+#next-steps a,
+#next-steps span,
+#next-steps p,
+#next-steps h2,
+#next-steps h3,
+.country-item *,
+.country-name {
+  color: var(--text-dark) !important;
+  /* إجبار النص على أخذ اللون الأزرق/الأسود الداكن */
+  display: flex !important;
+  /* منع المتصفح من إخفاء النص */
+  visibility: visible !important;
+  opacity: 1 !important;
+  font-size: 16px !important;
+  /* حجم خط مقروء ومريح للعين */
+  font-weight: bold !important;
+  text-align: center !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* في حال كانت أسماء البلدان داخل روابط تحتوي أيقونات، نمنع تقلصها */
+#next-steps a {
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
