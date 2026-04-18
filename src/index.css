@@ -207,3 +207,51 @@ button {
     top: 90px !important;
   }
 }
+
+/* --- التوسيط الإجباري والحماية المتبادلة لقائمة البلدان في الهاتف --- */
+@media screen and (max-width: 768px) {
+
+  /* 1. الإمساك بالحاوية الأم للبلدان ووضعها في قلب الشاشة */
+  #next-steps,
+  .countries-container,
+  #docs {
+    display: flex !important;
+    flex-direction: column !important;
+    /* ترتيب عمودي */
+    align-items: center !important;
+    /* توسيط المحتوى أفقيًا في المنتصف */
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 20px auto !important;
+    /* التوسيط المثالي (auto) من اليمين واليسار */
+    position: relative !important;
+    z-index: 50 !important;
+    /* رقم عالي جداً يضمن عدم اختفائها تحت الصورة الجمالية */
+    border: none !important;
+    /* إزالة أي حدود قد تسبب إزاحة */
+  }
+
+  /* 2. ضبط كل دولة (كارت) لتكون في الوسط تماماً مع مساحة تنفس */
+  #next-steps>div,
+  .country-item {
+    width: 90% !important;
+    /* تأخذ 90% من الشاشة لتبقى مسافة آمنة من الحواف */
+    margin: 10px auto !important;
+    /* التوسيط الدقيق للكارت نفسه */
+    text-align: center !important;
+    /* توسيط النصوص والأعلام داخل الكارت */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    background-color: var(--white) !important;
+    /* حمايتها بلون خلفية واضح */
+    border-radius: 10px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    /* لمسة جمالية خفيفة */
+  }
+
+  /* 3. إلغاء أي تنسيق شبكي (Grid) قد يتعارض مع التوسيط المرن (Flex) */
+  ul {
+    justify-content: center !important;
+  }
+}
