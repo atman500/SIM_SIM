@@ -261,3 +261,36 @@ button {
     height: auto !important;
   }
 }
+
+/* --- إصلاح ظهور الصورة الجمالية (Hero) في الهاتف --- */
+@media screen and (max-width: 768px) {
+  .hero {
+    /* 1. إجبار الحاوية على اتخاذ ارتفاع لأن العناصر بداخلها (absolute) لا تعطها ارتفاعاً تلقائياً */
+    height: 280px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    /* 2. تصغير التأثير الجمالي بالكامل بنسبة 40% ليناسب شاشة الهاتف */
+    transform: scale(0.6) !important;
+    transform-origin: center center !important;
+
+    /* 3. موازنة الهوامش الناتجة عن التصغير */
+    margin: -40px 0 !important;
+  }
+
+  .hero .base {
+    width: 140px !important;
+    /* تصغير القاعدة */
+  }
+
+  .hero .framework {
+    top: 25px !important;
+    /* إعادة تموضع الشعار */
+  }
+
+  .hero .vite {
+    top: 90px !important;
+    /* إعادة تموضع أيقونة Vite */
+  }
+}
