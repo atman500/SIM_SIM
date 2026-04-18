@@ -9,15 +9,23 @@
   --border-light: #e2e8f0;
 }
 
+/* 1. إصلاح الحسابات الهندسية دون تشويه العناصر الدقيقة */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. ضبط الشاشة بالكامل ومنع التمرير أو الاختفاء الأفقي من الجذور */
+html,
 body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
   font-family: var(--font-family);
   background-color: var(--bg-gray);
   color: var(--text-dark);
-}
-
-* {
-  box-sizing: border-box;
 }
 
 /* --- Mobile App Container Constraints --- */
@@ -28,20 +36,24 @@ body {
 
 .mobile-container {
   width: 100%;
-  max-width: 480px; /* Force phone width on desktop */
+  max-width: 480px;
+  /* Force phone width on desktop */
   background-color: var(--bg-app);
   min-height: 100vh;
   position: relative;
-  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   overflow-x: hidden;
-  padding-bottom: 70px; /* Space for bottom nav */
+  padding-bottom: 70px;
+  /* Space for bottom nav */
 }
 
 /* --- Utilities --- */
 .hover-item {
   transition: background-color 0.2s ease;
 }
-.hover-item:active, .hover-item:hover {
+
+.hover-item:active,
+.hover-item:hover {
   background-color: #f8fafc;
 }
 
@@ -88,10 +100,12 @@ body {
   cursor: pointer;
   text-decoration: none;
 }
+
 .nav-item.active {
   color: var(--primary);
   font-weight: 700;
 }
+
 .nav-item svg {
   margin-bottom: 4px;
 }
