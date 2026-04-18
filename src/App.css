@@ -1,184 +1,164 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+/* ========================================= */
+/* 1. المتغيرات والأساسيات */
+/* ========================================= */
+:root {
+  --primary: #e11d48;
+  --text-dark: #1e293b;
+  --text-light: #64748b;
+  --bg-gray: #f1f5f9;
+  --bg-app: #ffffff;
+  --white: #ffffff;
+  --font-family: 'Inter', system-ui, sans-serif;
+  --border: #e2e8f0;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: var(--font-family);
+  background-color: var(--bg-gray);
+  direction: rtl;
+  /* لضمان التوافق مع اللغة العربية */
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.mobile-container {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--bg-app);
+  min-height: 100vh;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  padding-bottom: 80px;
+}
+
+/* ========================================= */
+/* 2. الصورة الجمالية (Hero) - كما هي في صورتك */
+/* ========================================= */
 .hero {
   position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
-}
-
-#center {
+  height: 200px;
+  /* تحديد ارتفاع للحاوية */
   display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+  justify-content: center;
+  align-items: center;
 }
 
+.hero .base {
+  width: 170px;
+  position: relative;
+  z-index: 0;
+  margin: 0 auto;
+}
+
+.hero .framework,
+.hero .vite {
+  position: absolute;
+  inset-inline: 0;
+  margin: 0 auto;
+}
+
+.hero .framework {
+  z-index: 1;
+  top: 34px;
+  height: 28px;
+  transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg) scale(1.4);
+}
+
+.hero .vite {
+  z-index: 0;
+  top: 107px;
+  height: 26px;
+  transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg) scale(0.8);
+}
+
+/* ========================================= */
+/* 3. قائمة البلدان (الحل الجذري للتوسيط) */
+/* ========================================= */
 #next-steps {
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px;
   border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
 }
 
 #next-steps ul {
   list-style: none;
   padding: 0;
+  margin: 0;
   display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
-  position: relative;
+  flex-direction: column;
+  /* جعلها قائمة عمودية في الهاتف */
+  gap: 12px;
   width: 100%;
+  align-items: center;
+  /* توسيط العناصر أفقيًا */
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+#next-steps li {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#next-steps a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* توسيط العلم والاسم داخل الزر */
+  gap: 12px;
+  width: 90%;
+  /* عرض الزر */
+  padding: 14px 20px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text-dark) !important;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+#next-steps a:active {
+  transform: scale(0.97);
+}
+
+/* ضمان ظهور العلم والاسم بجانب بعضهما في المركز */
+#next-steps a span,
+#next-steps a img,
+#next-steps a svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* ========================================= */
+/* 4. تعديلات الشاشات الصغيرة */
+/* ========================================= */
+@media (max-width: 1024px) {
+  .hero {
+    transform: scale(0.8);
+    /* تصغير خفيف ليناسب الهاتف */
+    margin-top: -10px;
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+  #next-steps {
+    text-align: center;
   }
 }
