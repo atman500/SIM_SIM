@@ -171,3 +171,25 @@ button {
     display: none;
   }
 }
+
+/* --- إصلاح استرجاع قائمة الدول في الهاتف --- */
+@media screen and (max-width: 768px) {
+
+  /* 1. إلغاء الطي العشوائي الذي تسبب في إخفاء الدول */
+  div[style*="display: flex"] {
+    flex-wrap: nowrap !important;
+  }
+
+  /* 2. حصر الطي (Wrap) على الأشرطة العلوية فقط لضمان بقاء أيقونة التسجيل */
+  div[style*="justify-content: space-between"] {
+    flex-wrap: wrap !important;
+  }
+
+  /* 3. إجبار حاوية الدول على أخذ العرض الكامل والترتيب العمودي */
+  div[style*="flex-direction: column"] {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+}
