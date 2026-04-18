@@ -113,13 +113,13 @@ export default function Home({ userRole, setUserRole }) {
     {
       id: 1,
       img: "https://images.unsplash.com/photo-1542401886-65d6c61db217?w=1400",
-      title: "من قلب الوادي العريق والحديث",
-      description: "اختبر الاتصال العالمي السلس مع SoufSim eSIM في الوادي العريق والحديث"
+      title: "من هنا تبدأ حكاية سفرك الذكي",
+      description: "اختبر الاتصال العالمي السلس مع SoufSim eSIM من هنا تبدأ حكاية سفرك الذكي"
     },
     {
       id: 2,
       img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1400",
-      title: "تغطية عالمية فورية لطلبتنا",
+      title: "تغطية عالمية فورية لعملائنا",
       description: "أكثر من 170 دولة بين يديك، لتجربة سفر مريحة وآمنة"
     }
   ];
