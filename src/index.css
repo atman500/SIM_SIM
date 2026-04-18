@@ -132,9 +132,42 @@ button {
   max-width: 100% !important;
 }
 
-/* إجبار الصور والمدخلات على الانكماش داخل الهاتف */
-img,
-input,
-button {
-  max-width: 100% !important;
+/* --- تعديلات خاصة بشاشات الهواتف فقط --- */
+@media screen and (max-width: 768px) {
+
+  /* 1. إجبار الحاويات الأفقية على ترتيب العناصر في سطرين إذا ضاقت الشاشة */
+  div[style*="display: flex"] {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
+  /* 2. ترتيب الشريط العلوي (IDENTIFY ACCESS) بشكل عمودي مريح */
+  div[style*="justify-content: space-between"] {
+    flex-direction: column !important;
+    gap: 15px !important;
+    text-align: center !important;
+  }
+
+  /* 3. تصغير المسافات الجانبية للسماح للأيقونات بالظهور */
+  .mobile-container,
+  div[style*="padding:"] {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  /* 4. إذا كانت القائمة السفلية تحتوي أيقونات كثيرة، نسمح لها بالتمدد */
+  .bottom-nav {
+    flex-wrap: nowrap !important;
+    /* نبقيها في سطر واحد */
+    overflow-x: auto !important;
+    /* نسمح بتمرير الأيقونات بإصبع اليد إذا كانت كثيرة */
+    justify-content: flex-start !important;
+    gap: 20px;
+    padding: 10px 15px !important;
+  }
+
+  /* إخفاء شريط التمرير الجمالي للقائمة السفلية */
+  .bottom-nav::-webkit-scrollbar {
+    display: none;
+  }
 }
