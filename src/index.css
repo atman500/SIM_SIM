@@ -21,8 +21,10 @@ html,
 body {
   margin: 0;
   padding: 0;
-  width: 100%;
-  overflow-x: hidden;
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  position: relative !important;
   font-family: var(--font-family);
   background-color: var(--bg-gray);
   color: var(--text-dark);
@@ -32,19 +34,20 @@ body {
 #root {
   display: flex;
   justify-content: center;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
 }
 
 .mobile-container {
   width: 100%;
   max-width: 480px;
-  /* Force phone width on desktop */
   background-color: var(--bg-app);
   min-height: 100vh;
   position: relative;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   overflow-x: hidden;
   padding-bottom: 70px;
-  /* Space for bottom nav */
 }
 
 /* --- Utilities --- */
@@ -110,21 +113,6 @@ body {
   margin-bottom: 4px;
 }
 
-/* --- الحل الجذري لمنع خروج أي عنصر عن شاشة الهاتف --- */
-html,
-body {
-  overflow-x: hidden !important;
-  width: 100% !important;
-  max-width: 100vw !important;
-  position: relative !important;
-}
-
-#root {
-  overflow-x: hidden !important;
-  width: 100% !important;
-  max-width: 100vw !important;
-}
-
 /* إجبار الصور والمدخلات على الانكماش داخل الهاتف */
 img,
 input,
@@ -132,165 +120,90 @@ button {
   max-width: 100% !important;
 }
 
-/* --- تعديلات خاصة بشاشات الهواتف فقط --- */
-@media screen and (max-width: 768px) {
+/* ========================================================= */
+/* --- قواعد الشاشات الصغيرة والأجهزة اللوحية (منقحة) --- */
+/* ========================================================= */
 
-  /* 1. إجبار الحاويات الأفقية على ترتيب العناصر في سطرين إذا ضاقت الشاشة */
-  div[style*="display: flex"] {
-    flex-wrap: wrap !important;
-    justify-content: center !important;
+@media screen and (max-width: 1200px) {
+
+  /* 1. إجبار حاوية الدول على التحول للنمط العمودي مبكراً */
+  #next-steps,
+  .countries-container {
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    display: flex !important;
   }
 
-  /* 2. ترتيب الشريط العلوي (IDENTIFY ACCESS) بشكل عمودي مريح */
+  /* 2. إلغاء أي إزاحة جانبية قد تدفع الدول خارج الشاشة */
+  #next-steps>div,
+  .country-item {
+    width: 90% !important;
+    margin: 10px auto !important;
+    padding: 20px !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  /* 3. ضمان أن الحاوية الأم تسمح بالتمرير العمودي */
+  .mobile-container {
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+
+  /* 1. ترتيب الشريط العلوي بشكل عمودي مريح */
   div[style*="justify-content: space-between"] {
     flex-direction: column !important;
     gap: 15px !important;
     text-align: center !important;
+    flex-wrap: wrap !important;
   }
 
-  /* 3. تصغير المسافات الجانبية للسماح للأيقونات بالظهور */
+  /* 2. تصغير المسافات الجانبية */
   .mobile-container,
   div[style*="padding:"] {
     padding-left: 10px !important;
     padding-right: 10px !important;
   }
 
-  /* 4. إذا كانت القائمة السفلية تحتوي أيقونات كثيرة، نسمح لها بالتمدد */
+  /* 3. القائمة السفلية */
   .bottom-nav {
     flex-wrap: nowrap !important;
-    /* نبقيها في سطر واحد */
     overflow-x: auto !important;
-    /* نسمح بتمرير الأيقونات بإصبع اليد إذا كانت كثيرة */
     justify-content: flex-start !important;
     gap: 20px;
     padding: 10px 15px !important;
   }
 
-  /* إخفاء شريط التمرير الجمالي للقائمة السفلية */
   .bottom-nav::-webkit-scrollbar {
     display: none;
   }
-}
 
-/* --- إصلاح استرجاع قائمة الدول في الهاتف --- */
-@media screen and (max-width: 768px) {
-
-  /* 1. إلغاء الطي العشوائي الذي تسبب في إخفاء الدول */
-  div[style*="display: flex"] {
-    flex-wrap: nowrap !important;
-  }
-
-  /* 2. حصر الطي (Wrap) على الأشرطة العلوية فقط لضمان بقاء أيقونة التسجيل */
-  div[style*="justify-content: space-between"] {
-    flex-wrap: wrap !important;
-  }
-
-  /* 3. إجبار حاوية الدول على أخذ العرض الكامل والترتيب العمودي */
-  div[style*="flex-direction: column"] {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-    max-width: 100vw !important;
-  }
-}
-
-/* --- إصلاح ظهور الدول في جميع مقاسات الهواتف والأجهزة اللوحية --- */
-@media screen and (max-width: 1200px) {
-  /* رفعنا العتبة من 768 إلى 1200 لضمان الشمول */
-
-  /* 1. إجبار حاوية الدول على التحول للنمط العمودي مبكراً */
-  #next-steps,
-  .countries-container,
-  div[style*="display: flex"] {
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 100% !important;
-    display: flex !important;
-    /* ضمان عدم وجود display: none */
-  }
-
-  /* 2. إلغاء أي إزاحة جانبية قد تدفع الدول خارج الشاشة */
-  #next-steps>div,
-  .country-item {
-    width: 90% !important;
-    /* ترك مسافة بسيطة للحواف */
-    margin: 10px auto !important;
-    padding: 20px !important;
-    border-right: none !important;
-    /* إلغاء الحدود التي قد تشوه المنظر في الهاتف */
-    border-bottom: 1px solid var(--border-light);
-  }
-
-  /* 3. ضمان أن الحاوية الأم تسمح بالتمرير العمودي لرؤية باقي الدول */
-  .mobile-container {
-    overflow-y: auto !important;
-    height: auto !important;
-  }
-}
-
-/* --- إصلاح ظهور الدول في جميع مقاسات الهواتف والأجهزة اللوحية --- */
-@media screen and (max-width: 1200px) {
-  /* رفعنا العتبة من 768 إلى 1200 لضمان الشمول */
-
-  /* 1. إجبار حاوية الدول على التحول للنمط العمودي مبكراً */
-  #next-steps,
-  .countries-container,
-  div[style*="display: flex"] {
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 100% !important;
-    display: flex !important;
-    /* ضمان عدم وجود display: none */
-  }
-
-  /* 2. إلغاء أي إزاحة جانبية قد تدفع الدول خارج الشاشة */
-  #next-steps>div,
-  .country-item {
-    width: 90% !important;
-    /* ترك مسافة بسيطة للحواف */
-    margin: 10px auto !important;
-    padding: 20px !important;
-    border-right: none !important;
-    /* إلغاء الحدود التي قد تشوه المنظر في الهاتف */
-    border-bottom: 1px solid var(--border-light);
-  }
-
-  /* 3. ضمان أن الحاوية الأم تسمح بالتمرير العمودي لرؤية باقي الدول */
-  .mobile-container {
-    overflow-y: auto !important;
-    height: auto !important;
-  }
-}
-
-/* --- إصلاح ظهور الصورة الجمالية (Hero) في الهاتف --- */
-@media screen and (max-width: 768px) {
+  /* 4. إصلاح ظهور الصورة الجمالية (Hero) */
   .hero {
-    /* 1. إجبار الحاوية على اتخاذ ارتفاع لأن العناصر بداخلها (absolute) لا تعطها ارتفاعاً تلقائياً */
-    height: 280px !important;
+    min-height: 280px !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-
-    /* 2. تصغير التأثير الجمالي بالكامل بنسبة 40% ليناسب شاشة الهاتف */
-    transform: scale(0.6) !important;
+    transform: scale(0.65) !important;
     transform-origin: center center !important;
-
-    /* 3. موازنة الهوامش الناتجة عن التصغير */
-    margin: -40px 0 !important;
+    margin: -20px 0 !important;
+    overflow: visible !important;
+    /* ضمان عدم إخفاء العناصر المتداخلة */
   }
 
   .hero .base {
     width: 140px !important;
-    /* تصغير القاعدة */
   }
 
   .hero .framework {
     top: 25px !important;
-    /* إعادة تموضع الشعار */
   }
 
   .hero .vite {
     top: 90px !important;
-    /* إعادة تموضع أيقونة Vite */
   }
 }
