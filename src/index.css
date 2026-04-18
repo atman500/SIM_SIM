@@ -1,3 +1,6 @@
+/* ========================================= */
+/* 1. المتغيرات والألوان الأساسية (الجذور) */
+/* ========================================= */
 :root {
   --primary: #e11d48;
   --text-dark: #1e293b;
@@ -9,48 +12,60 @@
   --border-light: #e2e8f0;
 }
 
-/* 1. إصلاح الحسابات الهندسية دون تشويه العناصر الدقيقة */
+/* ========================================= */
+/* 2. إعادة ضبط المتصفح (Reset) ومنع التجاوز */
+/* ========================================= */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* 2. ضبط الشاشة بالكامل ومنع التمرير أو الاختفاء الأفقي من الجذور */
 html,
 body {
   margin: 0;
   padding: 0;
-  width: 100% !important;
-  max-width: 100vw !important;
+  width: 100%;
+  max-width: 100vw;
   overflow-x: hidden !important;
-  position: relative !important;
+  /* المنع الجذري للتمرير الأفقي */
   font-family: var(--font-family);
   background-color: var(--bg-gray);
   color: var(--text-dark);
 }
 
-/* --- Mobile App Container Constraints --- */
+/* ========================================= */
+/* 3. الهيكل الرئيسي للتطبيق (App Layout) */
+/* ========================================= */
 #root {
   display: flex;
   justify-content: center;
-  overflow-x: hidden !important;
-  width: 100% !important;
-  max-width: 100vw !important;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .mobile-container {
   width: 100%;
   max-width: 480px;
+  /* محاكاة عرض الهاتف حتى في الحاسوب */
   background-color: var(--bg-app);
   min-height: 100vh;
   position: relative;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   overflow-x: hidden;
   padding-bottom: 70px;
+  /* مساحة للقائمة السفلية */
 }
 
-/* --- Utilities --- */
+/* ========================================= */
+/* 4. العناصر المشتركة (Utilities) */
+/* ========================================= */
+img,
+input,
+button {
+  max-width: 100%;
+}
+
 .hover-item {
   transition: background-color 0.2s ease;
 }
@@ -60,7 +75,7 @@ body {
   background-color: #f8fafc;
 }
 
-/* Buttons */
+/* الأزرار الرئيسية */
 .btn-primary {
   background-color: var(--primary);
   color: var(--white);
@@ -80,13 +95,13 @@ body {
   background-color: #be123c;
 }
 
-/* Bottom Navigation */
+/* القائمة السفلية (Bottom Nav) */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   width: 100%;
   max-width: 480px;
-  background: white;
+  background: var(--white);
   border-top: 1px solid var(--border-light);
   display: flex;
   justify-content: space-around;
@@ -109,178 +124,77 @@ body {
   font-weight: 700;
 }
 
-.nav-item svg {
-  margin-bottom: 4px;
-}
-
-/* إجبار الصور والمدخلات على الانكماش داخل الهاتف */
-img,
-input,
-button {
-  max-width: 100% !important;
-}
-
-/* ========================================================= */
-/* --- قواعد الشاشات الصغيرة والأجهزة اللوحية (منقحة) --- */
-/* ========================================================= */
-
-@media screen and (max-width: 1200px) {
-
-  /* 1. إجبار حاوية الدول على التحول للنمط العمودي مبكراً */
-  #next-steps,
-  .countries-container {
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 100% !important;
-    display: flex !important;
-  }
-
-  /* 2. إلغاء أي إزاحة جانبية قد تدفع الدول خارج الشاشة */
-  #next-steps>div,
-  .country-item {
-    width: 90% !important;
-    margin: 10px auto !important;
-    padding: 20px !important;
-    border-right: none !important;
-    border-bottom: 1px solid var(--border-light);
-  }
-
-  /* 3. ضمان أن الحاوية الأم تسمح بالتمرير العمودي */
-  .mobile-container {
-    overflow-y: auto !important;
-    height: auto !important;
-  }
-}
-
+/* ========================================= */
+/* 5. قواعد الهواتف المحمولة (Mobile Responsive) */
+/* ========================================= */
 @media screen and (max-width: 768px) {
 
-  /* 1. ترتيب الشريط العلوي بشكل عمودي مريح */
+  /* --- أ. إصلاح الشريط العلوي (Header) --- */
   div[style*="justify-content: space-between"] {
     flex-direction: column !important;
     gap: 15px !important;
     text-align: center !important;
-    flex-wrap: wrap !important;
   }
 
-  /* 2. تصغير المسافات الجانبية */
-  .mobile-container,
-  div[style*="padding:"] {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-  }
-
-  /* 3. القائمة السفلية */
-  .bottom-nav {
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    justify-content: flex-start !important;
-    gap: 20px;
-    padding: 10px 15px !important;
-  }
-
-  .bottom-nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* 4. إصلاح ظهور الصورة الجمالية (Hero) */
+  /* --- ب. إصلاح الصورة الجمالية (Hero) --- */
   .hero {
-    min-height: 280px !important;
+    min-height: 260px !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    transform: scale(0.65) !important;
-    transform-origin: center center !important;
-    margin: -20px 0 !important;
+    transform: scale(0.7) !important;
+    /* تصغير متناسق */
+    margin: -10px auto !important;
     overflow: visible !important;
-    /* ضمان عدم إخفاء العناصر المتداخلة */
+    width: 100% !important;
   }
 
-  .hero .base {
-    width: 140px !important;
-  }
-
-  .hero .framework {
-    top: 25px !important;
-  }
-
-  .hero .vite {
-    top: 90px !important;
-  }
-}
-
-/* --- التوسيط الإجباري والحماية المتبادلة لقائمة البلدان في الهاتف --- */
-@media screen and (max-width: 768px) {
-
-  /* 1. الإمساك بالحاوية الأم للبلدان ووضعها في قلب الشاشة */
+  /* --- ج. إصلاح قائمة البلدان (التوسيط والحماية) --- */
   #next-steps,
   .countries-container,
-  #docs {
+  #next-steps ul {
     display: flex !important;
     flex-direction: column !important;
-    /* ترتيب عمودي */
     align-items: center !important;
-    /* توسيط المحتوى أفقيًا في المنتصف */
     justify-content: center !important;
     width: 100% !important;
-    margin: 20px auto !important;
-    /* التوسيط المثالي (auto) من اليمين واليسار */
-    position: relative !important;
-    z-index: 50 !important;
-    /* رقم عالي جداً يضمن عدم اختفائها تحت الصورة الجمالية */
-    border: none !important;
-    /* إزالة أي حدود قد تسبب إزاحة */
-  }
-
-  /* 2. ضبط كل دولة (كارت) لتكون في الوسط تماماً مع مساحة تنفس */
-  #next-steps>div,
-  .country-item {
-    width: 90% !important;
-    /* تأخذ 90% من الشاشة لتبقى مسافة آمنة من الحواف */
+    padding: 0 !important;
     margin: 10px auto !important;
-    /* التوسيط الدقيق للكارت نفسه */
-    text-align: center !important;
-    /* توسيط النصوص والأعلام داخل الكارت */
+  }
+
+  /* --- د. تصميم كروت البلدان وإظهار نصوصها بقوة --- */
+  .country-item,
+  #next-steps a {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
+    /* ترتيب العلم والاسم بجانب بعض */
     align-items: center !important;
-    background-color: var(--white) !important;
-    /* حمايتها بلون خلفية واضح */
-    border-radius: 10px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    /* لمسة جمالية خفيفة */
-  }
-
-  /* 3. إلغاء أي تنسيق شبكي (Grid) قد يتعارض مع التوسيط المرن (Flex) */
-  ul {
     justify-content: center !important;
+
+    width: 90% !important;
+    /* مساحة آمنة من الحواف */
+    min-height: 60px !important;
+    margin: 8px auto !important;
+    padding: 15px !important;
+
+    background-color: var(--white) !important;
+    border: 1px solid var(--border-light) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    text-decoration: none !important;
   }
-}
 
-/* --- إجبار أسماء البلدان (النصوص) على الظهور بلون داكن وواضح في الهاتف --- */
-#next-steps a,
-#next-steps span,
-#next-steps p,
-#next-steps h2,
-#next-steps h3,
-.country-item *,
-.country-name {
-  color: var(--text-dark) !important;
-  /* إجبار النص على أخذ اللون الأزرق/الأسود الداكن */
-  display: flex !important;
-  /* منع المتصفح من إخفاء النص */
-  visibility: visible !important;
-  opacity: 1 !important;
-  font-size: 16px !important;
-  /* حجم خط مقروء ومريح للعين */
-  font-weight: bold !important;
-  text-align: center !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* في حال كانت أسماء البلدان داخل روابط تحتوي أيقونات، نمنع تقلصها */
-#next-steps a {
-  flex-wrap: wrap !important;
-  gap: 10px !important;
-  width: 100% !important;
+  /* الاستهداف المباشر للنصوص داخل الكروت لمنع اختفائها */
+  .country-item p,
+  .country-item span,
+  #next-steps a span,
+  .country-name {
+    color: var(--text-dark) !important;
+    /* لون داكن إجباري */
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin: 0 10px !important;
+  }
 }
