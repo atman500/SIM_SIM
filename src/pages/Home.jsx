@@ -1,287 +1,203 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home({ userRole, setUserRole }) {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [allDestinations, setAllDestinations] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeFaq, setActiveFaq] = useState(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
 
-  // مصفوفة الوجهات السياحية العالمية (شاملة أكثر من 170 دولة)
-  const allDestinations = [
-    // الشرق الأوسط وشمال أفريقيا
-    { name: "تركيا", code: "tr", price: 450, flag: "tr" },
-    { name: "السعودية", code: "sa", price: 800, flag: "sa" },
-    { name: "الإمارات", code: "ae", price: 700, flag: "ae" },
-    { name: "تونس", code: "tn", price: 300, flag: "tn" },
-    { name: "مصر", code: "eg", price: 400, flag: "eg" },
-    { name: "المغرب", code: "ma", price: 350, flag: "ma" },
-    { name: "الأردن", code: "jo", price: 450, flag: "jo" },
-    { name: "قطر", code: "qa", price: 750, flag: "qa" },
-    { name: "الكويت", code: "kw", price: 700, flag: "kw" },
-    { name: "عمان", code: "om", price: 600, flag: "om" },
-    { name: "البحرين", code: "bh", price: 650, flag: "bh" },
-    { name: "لبنان", code: "lb", price: 400, flag: "lb" },
-    { name: "العراق", code: "iq", price: 500, flag: "iq" },
-    { name: "ليبيا", code: "ly", price: 350, flag: "ly" },
-    { name: "موريتانيا", code: "mr", price: 400, flag: "mr" },
-    { name: "فلسطين", code: "ps", price: 500, flag: "ps" },
-    { name: "اليمن", code: "ye", price: 600, flag: "ye" },
-
-    // أوروبا
-    { name: "فرنسا", code: "fr", price: 650, flag: "fr" },
-    { name: "إسبانيا", code: "es", price: 600, flag: "es" },
-    { name: "إيطاليا", code: "it", price: 600, flag: "it" },
-    { name: "بريطانيا", code: "gb", price: 900, flag: "gb" },
-    { name: "ألمانيا", code: "de", price: 650, flag: "de" },
-    { name: "سويسرا", code: "ch", price: 1100, flag: "ch" },
-    { name: "البرتغال", code: "pt", price: 600, flag: "pt" },
-    { name: "اليونان", code: "gr", price: 500, flag: "gr" },
-    { name: "هولندا", code: "nl", price: 700, flag: "nl" },
-    { name: "بلجيكا", code: "be", price: 650, flag: "be" },
-    { name: "النمسا", code: "at", price: 750, flag: "at" },
-    { name: "السويد", code: "se", price: 850, flag: "se" },
-    { name: "النرويج", code: "no", price: 950, flag: "no" },
-    { name: "الدنمارك", code: "dk", price: 800, flag: "dk" },
-    { name: "فنلندا", code: "fi", price: 800, flag: "fi" },
-    { name: "بولندا", code: "pl", price: 500, flag: "pl" },
-    { name: "المجر", code: "hu", price: 450, flag: "hu" },
-    { name: "التشيك", code: "cz", price: 500, flag: "cz" },
-    { name: "رومانيا", code: "ro", price: 450, flag: "ro" },
-    { name: "بلغاريا", code: "bg", price: 400, flag: "bg" },
-    { name: "كرواتيا", code: "hr", price: 550, flag: "hr" },
-    { name: "سلوفاكيا", code: "sk", price: 500, flag: "sk" },
-    { name: "أيرلندا", code: "ie", price: 800, flag: "ie" },
-    { name: "لوكسمبورغ", code: "lu", price: 950, flag: "lu" },
-    { name: "قبرص", code: "cy", price: 500, flag: "cy" },
-    { name: "مالطا", code: "mt", price: 550, flag: "mt" },
-    { name: "ألبانيا", code: "al", price: 400, flag: "al" },
-    { name: "أيسلندا", code: "is", price: 1200, flag: "is" },
-    { name: "صربيا", code: "rs", price: 450, flag: "rs" },
-    { name: "روسيا", code: "ru", price: 700, flag: "ru" },
-
-    // آسيا وأوقيانوسيا
-    { name: "ماليزيا", code: "my", price: 550, flag: "my" },
-    { name: "تايلاند", code: "th", price: 550, flag: "th" },
-    { name: "الصين", code: "cn", price: 850, flag: "cn" },
-    { name: "اليابان", code: "jp", price: 1000, flag: "jp" },
-    { name: "كوريا الجنوبية", code: "kr", price: 900, flag: "kr" },
-    { name: "سنغافورة", code: "sg", price: 950, flag: "sg" },
-    { name: "فيتنام", code: "vn", price: 450, flag: "vn" },
-    { name: "الفلبين", code: "ph", price: 500, flag: "ph" },
-    { name: "إندونيسيا", code: "id", price: 500, flag: "id" },
-    { name: "الهند", code: "in", price: 400, flag: "in" },
-    { name: "باكستان", code: "pk", price: 350, flag: "pk" },
-    { name: "سريلانكا", code: "lk", price: 400, flag: "lk" },
-    { name: "المالديف", code: "mv", price: 1400, flag: "mv" },
-    { name: "كازاخستان", code: "kz", price: 600, flag: "kz" },
-    { name: "أوزبكستان", code: "uz", price: 500, flag: "uz" },
-    { name: "أذربيجان", code: "az", price: 550, flag: "az" },
-    { name: "جورجيا", code: "ge", price: 500, flag: "ge" },
-    { name: "أستراليا", code: "au", price: 1000, flag: "au" },
-    { name: "نيوزيلندا", code: "nz", price: 1100, flag: "nz" },
-
-    // الأمريكيتان
-    { name: "الولايات المتحدة", code: "us", price: 900, flag: "us" },
-    { name: "كندا", code: "ca", price: 950, flag: "ca" },
-    { name: "المكسيك", code: "mx", price: 750, flag: "mx" },
-    { name: "البرازيل", code: "br", price: 800, flag: "br" },
-    { name: "الأرجنتين", code: "ar", price: 850, flag: "ar" },
-    { name: "كولومبيا", code: "co", price: 700, flag: "co" },
-    { name: "تشيلي", code: "cl", price: 750, flag: "cl" },
-    { name: "بيرو", code: "pe", price: 650, flag: "pe" },
-    { name: "بنما", code: "pa", price: 800, flag: "pa" },
-    { name: "كوستاريكا", code: "cr", price: 850, flag: "cr" },
-
-    // أفريقيا (ما عدا شمال أفريقيا)
-    { name: "جنوب أفريقيا", code: "za", price: 750, flag: "za" },
-    { name: "نيجيريا", code: "ng", price: 600, flag: "ng" },
-    { name: "كينيا", code: "ke", price: 550, flag: "ke" },
-    { name: "إثيوبيا", code: "et", price: 600, flag: "et" },
-    { name: "تنزانيا", code: "tz", price: 550, flag: "tz" },
-    { name: "السنغال", code: "sn", price: 450, flag: "sn" },
-    { name: "غانا", code: "gh", price: 500, flag: "gh" },
-    { name: "أوغندا", code: "ug", price: 500, flag: "ug" },
-    { name: "موريشيوس", code: "mu", price: 1100, flag: "mu" },
-    { name: "سيشل", code: "sc", price: 1500, flag: "sc" },
-    { name: "الكاميرون", code: "cm", price: 600, flag: "cm" },
-    { name: "كوت ديفوار", code: "ci", price: 550, flag: "ci" }
-  ];
-
-  // بيانات البانر المتحرك
-  const slides = [
-    {
-      id: 1,
-      img: "https://images.unsplash.com/photo-1542401886-65d6c61db217?w=1400",
-      title: "من هنا تبدأ حكاية سفرك الذكي",
-      description: "اختبر الاتصال العالمي السلس مع SoufSim eSIM من هنا تبدأ حكاية سفرك الذكي"
-    },
-    {
-      id: 2,
-      img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1400",
-      title: "تغطية عالمية فورية لعملائنا",
-      description: "أكثر من 170 دولة بين يديك، لتجربة سفر مريحة وآمنة"
-    }
-  ];
-
-  // بيانات الأسئلة الشائعة
-  const faqData = [
-    { q: "ما هو SoufSim؟", a: "SoufSim هو شريحة eSIM بيانات افتراضية مدفوعة مسبقاً تسمح لك بالاتصال بالإنترنت في أكثر من 170 دولة، بدون شريحة SIM فعلية أو اشتراك." },
-    { q: "كيف أفعل SoufSim الخاص بي؟", a: "بعد الشراء، ستتلقى رمز الاستجابة السريعة (QR code) عبر البريد الإلكتروني. ما عليك سوى مسحه ضوئياً باستخدام هاتفك المتوافق." },
-    { q: "هل يمكنني إعادة شحن SoufSim الخاص بي من الخارج؟", a: "نعم بالتأكيد! يمكنك الدخول إلى حسابك في موقعنا من أي مكان وإضافة باقات بيانات جديدة." },
-    { q: "هل يسمح SoufSim بإجراء المكالمات أو استقبال الرسائل النصية؟", a: "باقاتنا مخصصة للبيانات (الإنترنت) فقط. يمكنك استخدام تطبيقات المراسلة مثل WhatsApp للتواصل." }
-  ];
+  // صور الخلفية التراثية المعتمدة
+  const sandDunesBg = "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?q=80&w=2000&auto=format&fit=crop";
+  const oldWadiCity = "https://images.unsplash.com/photo-1545062990-4a95e8e4b96d?q=80&w=1500&auto=format&fit=crop";
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [slides.length]);
-
-  const toggleFaq = (index) => {
-    setActiveFaq(activeFaq === index ? null : index);
-  };
+    async function fetchDestinations() {
+      try {
+        const { data, error } = await supabase.from('destinations').select('*').order('name', { ascending: true });
+        if (error) throw error;
+        setAllDestinations(data || []);
+      } catch (error) {
+        console.error("Error:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDestinations();
+  }, []);
 
   const openDetails = (country) => {
-    const basePrice = country.price || 350;
+    const basePrice = country.Price || 0;
     const finalPrice = userRole === "pos" ? Math.round(basePrice * 0.8) : basePrice;
     navigate("/details", { state: { selectedCountry: { ...country, price: finalPrice }, userRole } });
     window.scrollTo(0, 0);
   };
 
-  // ربط الفلترة بالمصفوفة الكاملة allDestinations
   const filteredCountries = allDestinations.filter(country =>
     country.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const popularDestinations = filteredCountries.slice(0, 4);
+  const bestSellers = filteredCountries.slice(4);
+
   return (
-    <div style={{ backgroundColor: "#f8fafc", minHeight: "100vh", display: "flex", flexDirection: "column", direction: "rtl", fontFamily: "Arial, sans-serif" }}>
+    <div style={{
+      backgroundImage: `url(${sandDunesBg})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed",
+      minHeight: "100vh", display: "flex", flexDirection: "column", direction: "rtl", fontFamily: "system-ui, sans-serif"
+    }}>
 
-      {/* 1. نظام الوصول */}
-      <div style={{ backgroundColor: "#1e293b", padding: "10px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", direction: "ltr" }}>
-        <span style={{ color: "white", fontSize: "11px", fontWeight: "bold" }}>IDENTIFY ACCESS:</span>
-        <div style={{ display: "flex", backgroundColor: "#334155", borderRadius: "10px", padding: "2px" }}>
-          <button onClick={() => setUserRole("customer")} style={{ padding: "5px 15px", borderRadius: "8px", border: "none", fontSize: "10px", fontWeight: "bold", backgroundColor: userRole === "customer" ? "#e11d48" : "transparent", color: "white", cursor: "pointer", transition: "0.3s" }}>CONSUMER</button>
-          <button onClick={() => setUserRole("pos")} style={{ padding: "5px 15px", borderRadius: "8px", border: "none", fontSize: "10px", fontWeight: "bold", backgroundColor: userRole === "pos" ? "#e11d48" : "transparent", color: "white", cursor: "pointer", transition: "0.3s" }}>POINT OF SALE (POS)</button>
+      {/* 1. نظام الوصول العلوي - مصون */}
+      <div style={{ backgroundColor: "rgba(15, 23, 42, 0.9)", padding: "10px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", direction: "ltr", zIndex: 1000, backdropFilter: "blur(10px)" }}>
+        <span style={{ color: "#94a3b8", fontSize: "10px", fontWeight: "bold" }}>SoufSim Global Access</span>
+        <div style={{ display: "flex", backgroundColor: "#1e293b", borderRadius: "8px", padding: "2px" }}>
+          <button onClick={() => setUserRole("customer")} style={{ padding: "4px 12px", borderRadius: "6px", border: "none", fontSize: "9px", fontWeight: "bold", backgroundColor: userRole === "customer" ? "#e11d48" : "transparent", color: "white", cursor: "pointer" }}>CONSUMER</button>
+          <button onClick={() => setUserRole("pos")} style={{ padding: "4px 12px", borderRadius: "6px", border: "none", fontSize: "9px", fontWeight: "bold", backgroundColor: userRole === "pos" ? "#e11d48" : "transparent", color: "white", cursor: "pointer" }}>PARTNER POS</button>
         </div>
       </div>
 
-      {/* 2. الهيدر مع زر التسجيل المُفعل */}
-      <div style={{ backgroundColor: "#e11d48", padding: "40px 20px", color: "white", borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px", maxWidth: "1000px", margin: "0 auto 30px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ width: "45px", height: "45px", backgroundColor: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#e11d48", fontWeight: "900", fontSize: "20px" }}>S</div>
-            <div style={{ textAlign: "right" }}>
-              <h1 style={{ fontSize: "22px", fontWeight: "900", margin: "0" }}>SoufSim</h1>
-              <p style={{ margin: "0", fontSize: "11px", opacity: 0.9 }}>Souf International - SIN Sahara</p>
+      {/* 2. الهيدر العريق مع أيقونة التسجيل المصونة */}
+      <div style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(225,29,72,0.85), rgba(225,29,72,0.95)), url(${oldWadiCity})`,
+        backgroundSize: "cover", backgroundPosition: "center",
+        padding: "40px 20px 80px 20px", color: "white", borderBottomLeftRadius: "35px", borderBottomRightRadius: "35px", position: "relative", zIndex: 10
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: "1200px", margin: "0 auto 30px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div style={{ width: "42px", height: "42px", backgroundColor: "white", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "#e11d48", fontWeight: "900", fontSize: "22px" }}>S</div>
+            <div>
+              <h1 style={{ fontSize: "20px", fontWeight: "900", margin: "0" }}>SoufSim</h1>
+              <p style={{ margin: "0", fontSize: "11px", opacity: 0.9 }}>وادي سوف - مدينة الألف قبة</p>
             </div>
           </div>
-          {/* زر تسجيل الدخول */}
-          <button onClick={() => navigate("/login")} style={{ backgroundColor: "white", color: "#e11d48", border: "none", padding: "8px 15px", borderRadius: "10px", fontSize: "14px", fontWeight: "bold", cursor: "pointer", boxShadow: "0 2px 5px rgba(0,0,0,0.2)" }}>
-            👤 تسجيل الدخول
-          </button>
+          {/* زر التسجيل المصون */}
+          <button onClick={() => navigate("/login")} style={{ backgroundColor: "rgba(255,255,255,0.25)", color: "white", border: "1px solid rgba(255,255,255,0.4)", padding: "10px 20px", borderRadius: "12px", fontSize: "14px", fontWeight: "bold", cursor: "pointer", backdropFilter: "blur(10px)" }}>👤 تسجيل الدخول</button>
         </div>
-        <div style={{ textAlign: "center" }}>
-          <h2 style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "15px" }}>تحية عطرة وتمنيات بسفرٍ مريح وإقامةٍ موفّقة</h2>
-          <input type="text" placeholder="ابحث عن وجهتك..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: "100%", maxWidth: "500px", padding: "15px 20px", borderRadius: "10px", border: "none", outline: "none", fontSize: "15px", textAlign: "right", color: "#333", margin: "0 auto", display: "block" }} />
+        <div style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto" }}>
+          <input type="text" placeholder="ابحث عن وجهتك العالمية..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: "100%", padding: "16px 25px", borderRadius: "18px", border: "none", outline: "none", fontSize: "16px", textAlign: "right", color: "#1e293b", boxShadow: "0 10px 30px rgba(0,0,0,0.2)" }} />
         </div>
       </div>
 
-      {/* 3. البانر المتحرك */}
-      <div style={{ padding: "10px 20px", marginTop: "-15px", marginBottom: "15px" }}>
-        <div style={{ position: "relative", width: "100%", maxWidth: "1000px", margin: "0 auto", height: "200px", borderRadius: "20px", overflow: "hidden", boxShadow: "0 5px 15px rgba(0,0,0,0.1)" }}>
-          <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "flex", transition: "transform 0.5s ease-in-out", transform: `translateX(${currentSlide * 100}%)` }}>
-            {slides.map((slide) => (
-              <div key={slide.id} style={{ flex: "0 0 100%", height: "100%", position: "relative", background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent 70%)" }}>
-                <img src={slide.img} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt={slide.title} />
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 15px", textAlign: "right", color: "white" }}>
-                  <h4 style={{ margin: "0 0 5px 0", fontSize: "18px", fontWeight: "bold" }}>{slide.title}</h4>
-                  <p style={{ margin: 0, fontSize: "13px", opacity: 0.9 }}>{slide.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* 3. شبكة الوجهات مع التصميم الجديد للبطاقات */}
+      <div style={{ padding: "0 20px 40px", maxWidth: "1250px", margin: "-40px auto 0", width: "100%", zIndex: 50, position: "relative" }}>
+        <h3 style={{ color: "white", fontSize: "15px", fontWeight: "800", marginBottom: "20px", textShadow: "0 2px 5px rgba(0,0,0,0.5)" }}>وجهات شائعة</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "25px", marginBottom: "50px" }}>
+          {popularDestinations.map((country) => (
+            <DestinationCard key={country.id} country={country} openDetails={openDetails} />
+          ))}
+        </div>
+
+        <h3 style={{ color: "white", fontSize: "19px", fontWeight: "900", marginBottom: "20px", borderRight: "6px solid white", paddingRight: "15px", textShadow: "0 2px 5px rgba(0,0,0,0.5)" }}>أفضل الباقات الأكثر مبيعاً</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "25px" }}>
+          {bestSellers.map((country) => (
+            <DestinationCard key={country.id} country={country} openDetails={openDetails} />
+          ))}
         </div>
       </div>
 
-      {/* 4. قائمة الوجهات */}
-      <div style={{ padding: "10px 20px", flex: 1, maxWidth: "800px", margin: "0 auto", width: "100%" }}>
-        <h3 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "20px", color: "#1e293b", textAlign: "right", borderRight: "4px solid #e11d48", paddingRight: "10px" }}>الوجهات المتاحة ({filteredCountries.length})</h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {filteredCountries.map((country, i) => {
-            const basePrice = country.price;
-            const posPrice = Math.round(basePrice * 0.8);
-            return (
-              <div key={i} onClick={() => openDetails(country)} style={{ display: "flex", alignItems: "center", backgroundColor: "white", padding: "15px 20px", borderRadius: "12px", border: "1px solid #e2e8f0", cursor: "pointer" }}>
-                <img src={`https://flagcdn.com/w80/${country.flag}.png`} style={{ width: "35px", height: "35px", borderRadius: "50%", marginLeft: "15px", objectFit: "cover" }} alt={country.name} />
-                <div style={{ flex: 1, textAlign: "right" }}>
-                  <div style={{ fontWeight: "bold", fontSize: "15px", color: "#1e293b" }}>{country.name}</div>
-                  {userRole === "pos" ? (
-                    <div><span style={{ fontSize: "11px", color: "#94a3b8", textDecoration: "line-through", marginLeft: "8px" }}>{basePrice} د.ج</span><span style={{ fontSize: "13px", color: "#10b981", fontWeight: "bold" }}>سعر الجملة: {posPrice} د.ج</span></div>
-                  ) : (
-                    <div style={{ fontSize: "12px", color: "#e11d48", fontWeight: "bold" }}>تبدأ من {basePrice} د.ج</div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+      {/* 4. لماذا تختارنا - مصون */}
+      <section style={{ padding: "60px 20px", textAlign: "center", backgroundColor: "rgba(255, 255, 255, 0.7)", borderRadius: "40px", margin: "0 20px 40px", backdropFilter: "blur(15px)", border: "1px solid rgba(255,255,255,0.3)" }}>
+        <h2 style={{ fontSize: "26px", fontWeight: "900", marginBottom: "40px", color: "#0f172a" }}>لماذا تختار <span style={{ color: "#e11d48" }}>SoufSim</span>؟</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "25px", maxWidth: "1100px", margin: "0 auto" }}>
+          {[
+            { t: "تفعيل QR فوري", d: "استلم شريحتك فوراً عبر البريد.", i: "⚡" },
+            { t: "أسعار محلية", d: "بالدينار الجزائري وبدون تجوال.", i: "💰" },
+            { t: "دفع آمن 100%", d: "تشفير عالي لبياناتك البنكية.", i: "🛡️" },
+            { t: "دعم 24/7", d: "فريقنا مستعد لمساعدتك دائماً.", i: "🎧" }
+          ].map((item, i) => (
+            <div key={i} style={{ padding: "30px", borderRadius: "25px", backgroundColor: "rgba(255, 255, 255, 0.8)", border: "1px solid #f1f5f9", textAlign: "right" }}>
+              <div style={{ fontSize: "40px", marginBottom: "15px" }}>{item.i}</div>
+              <h4 style={{ fontWeight: "900", fontSize: "18px" }}>{item.t}</h4>
+              <p style={{ color: "#64748b", fontSize: "13px" }}>{item.d}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
 
-      {/* 5. قسم الأسئلة الشائعة */}
-      <div style={{ backgroundColor: "#ffffff", padding: "60px 20px", borderTop: "1px solid #e2e8f0", marginTop: "40px" }}>
+      {/* 5. الأسئلة الشائعة - مصون */}
+      <section style={{ padding: "60px 20px" }}>
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "40px" }}>
-            <h2 style={{ fontSize: "26px", fontWeight: "900", color: "#0f172a", marginBottom: "10px" }}>الأسئلة الشائعة</h2>
-            <p style={{ fontSize: "15px", color: "#64748b" }}>اعثر على معلومات مفيدة للإجابة على أسئلتك</p>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {faqData.map((item, index) => (
-              <div key={index} style={{ border: "1px solid #e2e8f0", borderRadius: "10px", overflow: "hidden" }}>
-                <div onClick={() => toggleFaq(index)} style={{ padding: "18px 20px", backgroundColor: "#fff", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: "bold", fontSize: "14px", color: "#0f172a" }}>{item.q}</span>
-                  <span style={{ color: "#64748b", transform: activeFaq === index ? "rotate(180deg)" : "rotate(0deg)", transition: "0.3s", fontSize: "16px" }}>{activeFaq === index ? "∧" : "∨"}</span>
-                </div>
-                {activeFaq === index && (
-                  <div style={{ padding: "0 20px 20px 20px", backgroundColor: "#fff", fontSize: "13px", color: "#64748b", lineHeight: "1.8", textAlign: "right" }}>
-                    {item.a}
-                  </div>
-                )}
+          <h2 style={{ textAlign: "center", fontSize: "24px", fontWeight: "900", marginBottom: "40px", color: "white", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>الأسئلة الشائعة</h2>
+          {[{ q: "ما هي شريحة eSIM؟", a: "هي شريحة رقمية مدمجة تتيح لك تفعيل باقة إنترنت دولية." }, { q: "هل يعمل هاتفي مع الخدمة؟", a: "معظم الهواتف الحديثة تدعم التقنية." }].map((faq, i) => (
+            <div key={i} onClick={() => setActiveFaq(activeFaq === i ? null : i)} style={{ backgroundColor: "rgba(255, 255, 255, 0.85)", marginBottom: "12px", borderRadius: "15px", cursor: "pointer", overflow: "hidden", border: "1px solid rgba(255,255,255,0.3)", backdropFilter: "blur(10px)" }}>
+              <div style={{ padding: "18px 20px", fontWeight: "bold", display: "flex", justifyContent: "space-between", color: "#1e293b" }}>
+                <span>{faq.q}</span>
+                <span style={{ color: "#e11d48" }}>{activeFaq === i ? "−" : "+"}</span>
               </div>
-            ))}
-          </div>
+              {activeFaq === i && <div style={{ padding: "0 20px 20px", color: "#64748b", fontSize: "14px", lineHeight: "1.6" }}>{faq.a}</div>}
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
 
-      {/* 6. الفوتر */}
-      <footer style={{ backgroundColor: "#111827", color: "#f3f4f6", padding: "60px 20px 30px" }}>
-        <div style={{ maxWidth: "1000px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "40px", direction: "rtl", textAlign: "right" }}>
-          <div>
-            <h2 style={{ color: "#e11d48", fontWeight: "900", marginBottom: "20px", fontSize: "20px" }}>SoufSim</h2>
-            <p style={{ fontSize: "13px", lineHeight: "1.8", color: "#9ca3af", marginBottom: "20px" }}>حل SoufSim الموثوق للاتصال العالمي الفوري. أكثر من 170 دولة مغطاة مع التفعيل الفوري والأسعار الشفافة.</p>
-          </div>
-          <div>
-            <h3 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "25px", color: "#ffffff" }}>روابط سريعة</h3>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, fontSize: "14px", color: "#9ca3af", lineHeight: "2.8" }}>
-              <li onClick={() => window.scrollTo(0, 0)} style={{ cursor: "pointer", transition: "0.2s" }}>• جميع الوجهات</li>
-              <li onClick={() => navigate("/installation")} style={{ cursor: "pointer", transition: "0.2s" }}>• أدلة التثبيت</li>
-              <li onClick={() => navigate("/support")} style={{ cursor: "pointer", color: "#e11d48", fontWeight: "bold", transition: "0.2s" }}>• دعم العملاء</li>
-              {/* الرابط المفعل للتسجيل في الفوتر */}
-              <li onClick={() => navigate("/login")} style={{ cursor: "pointer", transition: "0.2s" }}>• حسابي / التسجيل</li>
-            </ul>
-          </div>
-          <div>
-            <h3 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "25px", color: "#ffffff" }}>اتصل بنا</h3>
-            <div style={{ fontSize: "14px", color: "#9ca3af", display: "flex", flexDirection: "column", gap: "18px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><span>✉️</span> <span>hello@soufsim.dz</span></div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", direction: "ltr", justifyContent: "flex-end" }}><span>+213 000 00 00 00</span> <span>📞</span></div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><span>📍</span> <span>الوادي، الجزائر</span></div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}><span>📍</span> <span> جميع الحقوق محفوظة Dr.Atmane medini </span></div>
+      {/* 6. تحميل التطبيق - مصون */}
+      <section style={{ padding: "40px 20px" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", background: "linear-gradient(90deg, #0ea5e9, #6366f1)", borderRadius: "30px", padding: "40px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", color: "white", boxShadow: "0 20px 50px rgba(0,0,0,0.3)" }}>
+          <div style={{ flex: "1 1 400px", textAlign: "right" }}>
+            <h2 style={{ fontSize: "26px", fontWeight: "900", marginBottom: "15px" }}>حمل التطبيق واستمتع بإدارة أسهل</h2>
+            <p style={{ opacity: 0.9 }}>تابع استهلاك البيانات وفعل شرائحك بضغطة زر.</p>
+            <div style={{ display: "flex", gap: "10px", marginTop: "25px", justifyContent: "flex-end" }}>
+              <div style={{ backgroundColor: "black", padding: "10px 20px", borderRadius: "10px", cursor: "pointer", fontSize: "12px", fontWeight: "bold" }}>Google Play</div>
+              <div style={{ backgroundColor: "black", padding: "10px 20px", borderRadius: "10px", cursor: "pointer", fontSize: "12px", fontWeight: "bold" }}>App Store</div>
             </div>
           </div>
+          <div style={{ flex: "1 1 300px", textAlign: "center", fontSize: "100px" }}>📱</div>
         </div>
+      </section>
+
+      <footer style={{ backgroundColor: "rgba(15, 23, 42, 0.95)", color: "white", padding: "40px 20px", textAlign: "center", marginTop: "auto", backdropFilter: "blur(10px)" }}>
+        <p style={{ fontSize: "12px", opacity: 0.8 }}>جميع الحقوق محفوظة للدكتور عثمان مديني © 2026 | SoufSim</p>
       </footer>
     </div>
+  );
+}
+
+// مكون البطاقة (Card) المطور - دمج التصميم الجديد مع المربعات التقنية
+function DestinationCard({ country, openDetails }) {
+  const countryImage = `https://source.unsplash.com/600x400/?${country.name},landmark,travel`;
+
+  return (
+    <motion.div
+      whileHover={{ y: -10, scale: 1.02 }}
+      onClick={() => openDetails(country)}
+      style={{
+        position: "relative",
+        height: "280px", // ارتفاع رشيق ومتناسق
+        borderRadius: "28px",
+        overflow: "hidden",
+        cursor: "pointer",
+        boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+        // دمج التدرج اللوني مع صورة المعلم السياحي
+        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.85)), url(${countryImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
+    >
+      {/* العلم والاسم */}
+      <div style={{ position: "absolute", top: "15px", right: "15px", display: "flex", alignItems: "center", gap: "8px", zIndex: 2 }}>
+        <span style={{ color: "white", fontSize: "16px", fontWeight: "900", textShadow: "0 2px 4px rgba(0,0,0,0.6)" }}>{country.name}</span>
+        <img src={country.flag_url} style={{ width: "26px", height: "26px", borderRadius: "6px", border: "1px solid white" }} alt="" />
+      </div>
+
+      {/* المربعات التقنية السوداء (مسترجعة ومصونة) */}
+      <div style={{ position: "absolute", top: "45%", left: "15px", right: "15px", display: "flex", gap: "8px", zIndex: 2 }}>
+        <div style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.7)", padding: "10px", borderRadius: "12px", textAlign: "center", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(5px)" }}>
+          <div style={{ color: "#94a3b8", fontSize: "8px" }}>الصلاحية</div>
+          <div style={{ color: "white", fontWeight: "bold", fontSize: "12px" }}>30 يوم</div>
+        </div>
+        <div style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.7)", padding: "10px", borderRadius: "12px", textAlign: "center", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(5px)" }}>
+          <div style={{ color: "#94a3b8", fontSize: "8px" }}>البيانات</div>
+          <div style={{ color: "white", fontWeight: "bold", fontSize: "12px" }}>5120 MB</div>
+        </div>
+      </div>
+
+      {/* السعر وزر الحجز */}
+      <div style={{ position: "absolute", bottom: "20px", left: "15px", right: "15px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 2 }}>
+        <div style={{ color: "white", fontSize: "20px", fontWeight: "900" }}>{country.Price} <span style={{ fontSize: "10px", opacity: 0.8 }}>DZD</span></div>
+        <button style={{ backgroundColor: "#0ea5e9", color: "white", border: "none", padding: "8px 18px", borderRadius: "10px", fontSize: "11px", fontWeight: "bold" }}>حجز</button>
+      </div>
+    </motion.div>
   );
 }
