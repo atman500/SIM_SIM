@@ -1,14 +1,13 @@
 
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-
 // استيراد الصفحات
 import Home from "./pages/Home";
 import Details from "./pages/Details";
 import Login from "./pages/Login";
 import Checkout from "./pages/Checkout";
-import AdminDashboard from "./pages/AdminDashboard"; // الصفحة الجديدة للمدير
+import AdminDashboard from "./pages/Admin"; // الصفحة الجديدة للمدير
 
 export default function App() {
   const [userRole, setUserRole] = useState("customer");
