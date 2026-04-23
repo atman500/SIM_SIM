@@ -205,7 +205,7 @@ function DestinationCard({ country, openDetails, handleBooking, userRole }) {
           onClick={(e) => handleBooking(e, country)}
           style={{ backgroundColor: "#0ea5e9", color: "white", border: "none", padding: "8px 18px", borderRadius: "12px", fontSize: "12px", fontWeight: "bold", boxShadow: "0 4px 10px rgba(0,0,0,0.3)", cursor: "pointer" }}
         >
-          حجز
+          اطلب الآن
         </button>
       </div>
     </motion.div>
