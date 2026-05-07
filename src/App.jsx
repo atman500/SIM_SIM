@@ -8,6 +8,10 @@ import Details from "./pages/Details";
 import Login from "./pages/Login";
 import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/Admin"; // الصفحة الجديدة للمدير
+// 1. أضف هذا السطر في أعلى ملف App.jsx
+import Analytics from "./pages/Analytics";
+// 2. داخل <Routes>، أضف هذا المسار
+
 
 export default function App() {
   const [userRole, setUserRole] = useState("customer");
@@ -19,6 +23,8 @@ export default function App() {
 
       {/* صفحة تفاصيل الباقة والفوترة */}
       <Route path="/details" element={<Details />} />
+
+      <Route path="/analytics" element={<Analytics />} />
 
       {/* صفحة تسجيل الدخول / إنشاء حساب */}
       <Route path="/login" element={<Login />} />

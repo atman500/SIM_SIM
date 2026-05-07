@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+
 export default function Login() {
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState(""); // 👈 إضافة حالة كلمة المرور
-    const [loading, setLoading] = useState(false); // 👈 إضافة حالة التحميل
-    const [isSignUp, setIsSignUp] = useState(false); // 👈 للتبديل بين تسجيل الدخول وإنشاء حساب
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [isSignUp, setIsSignUp] = useState(false);
     const navigate = useNavigate();
 
-    // دالة التعامل مع إرسال النموذج (دخول أو تسجيل جديد)
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         if (isSignUp) {
-            // 1. منطق إنشاء حساب جديد
-            const { error } = await supabase.auth.signUp({
+            // 1. منطق إنشاء حساب جديد عبر Supabase
+            const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
             });
@@ -23,11 +23,11 @@ export default function Login() {
             if (error) {
                 alert("خطأ في التسجيل: " + error.message);
             } else {
-                alert("تم إنشاء الحساب بنجاح! جرب تسجيل الدخول الآن.");
-                setIsSignUp(false); // تحويل الواجهة لوضع تسجيل الدخول
+                alert("تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.");
+                setIsSignUp(false); // العودة تلقائياً لوضع تسجيل الدخول
             }
         } else {
-            // 2. منطق تسجيل الدخول الفعلي عبر Supabase
+            // 2. منطق تسجيل الدخول الفعلي
             const { error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
@@ -36,13 +36,13 @@ export default function Login() {
             if (error) {
                 alert("بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور.");
             } else {
-                // 3. التوجيه بعد نجاح الدخول (نفس منطقك الممتاز)
+                // 3. منطق التوجيه الذكي (أدمن أو زبون)
                 const adminEmail = "admin@soufsim.com";
                 if (email.toLowerCase() === adminEmail.toLowerCase()) {
                     alert("مرحباً بك أيها المدير!");
                     navigate("/admin");
                 } else {
-                    navigate("/"); // توجيه الزبون العادي للرئيسية
+                    navigate("/");
                 }
             }
         }
@@ -52,6 +52,7 @@ export default function Login() {
     return (
         <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f8fafc", padding: "20px", direction: "rtl", fontFamily: "Arial" }}>
             <div style={{ width: "100%", maxWidth: "400px", backgroundColor: "white", padding: "40px", borderRadius: "20px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }}>
+
                 <div style={{ textAlign: "center", marginBottom: "30px" }}>
                     <div style={{ width: "50px", height: "50px", backgroundColor: "#e11d48", borderRadius: "12px", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: "24px", fontWeight: "bold", marginBottom: "15px" }}>S</div>
                     <h2 style={{ fontSize: "22px", fontWeight: "bold", color: "#1e293b" }}>
@@ -63,7 +64,6 @@ export default function Login() {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    {/* حقل البريد الإلكتروني */}
                     <div style={{ marginBottom: "20px" }}>
                         <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", color: "#64748b" }}>البريد الإلكتروني</label>
                         <input
@@ -76,7 +76,6 @@ export default function Login() {
                         />
                     </div>
 
-                    {/* حقل كلمة المرور (جديد) */}
                     <div style={{ marginBottom: "20px" }}>
                         <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", color: "#64748b" }}>كلمة المرور</label>
                         <input
@@ -89,12 +88,10 @@ export default function Login() {
                         />
                     </div>
 
-                    {/* زر الإرسال الرئيسي */}
-                    <button type="submit" disabled={loading} style={{ width: "100%", padding: "14px", backgroundColor: "#1e293b", color: "white", border: "none", borderRadius: "10px", fontSize: "16px", fontWeight: "bold", cursor: "pointer", marginBottom: "15px", opacity: loading ? 0.7 : 1 }}>
-                        {loading ? "جاري التحميل..." : (isSignUp ? "إنشاء الحساب" : "دخول")}
+                    <button type="submit" disabled={loading} style={{ width: "100%", padding: "14px", backgroundColor: "#1e293b", color: "white", border: "none", borderRadius: "10px", fontSize: "16px", fontWeight: "bold", cursor: loading ? "not-allowed" : "pointer", marginBottom: "15px", opacity: loading ? 0.7 : 1 }}>
+                        {loading ? "جاري المعالجة..." : (isSignUp ? "إنشاء الحساب" : "دخول")}
                     </button>
 
-                    {/* زر التبديل بين الدخول والتسجيل */}
                     <div style={{ textAlign: "center", marginTop: "10px" }}>
                         <button
                             type="button"
